@@ -1,11 +1,9 @@
 <?php
-
 session_start();
 
 require_once "../config/database.php";
 
-if(!isset($_SESSION['id_user']))
-{
+if (!isset($_SESSION['id_user'])) {
     header("Location: ../login.php");
     exit;
 }
@@ -20,5 +18,3 @@ mysqli_query(
 
 header("Location: kendaraan.php");
 exit;
-
-?>

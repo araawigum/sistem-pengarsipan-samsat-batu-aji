@@ -20,8 +20,7 @@ $id_otomatis = "P-" . str_pad(
     STR_PAD_LEFT
 );
 
-if(!isset($_SESSION['id_user']))
-{
+if (!isset($_SESSION['id_user'])) {
     header("Location: ../login.php");
     exit;
 }
@@ -55,8 +54,8 @@ $kendaraan = mysqli_query(
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <link
-href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css"
-rel="stylesheet">
+        href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css"
+        rel="stylesheet">
 
     <link rel="stylesheet" href="../assets/css/style.css?v=10">
 
@@ -64,249 +63,211 @@ rel="stylesheet">
 
 <body>
 
-<div class="container">
+    <div class="container">
 
-    <div class="sidebar">
+        <div class="sidebar">
 
-        <div class="logo">
-            SAMSAT BATU AJI
-        </div>
+            <div class="logo">
+                SAMSAT BATU AJI
+            </div>
 
-        <div class="menu">
+            <div class="menu">
 
-            <a href="dashboard.php">
-                Dashboard
-            </a>
-
-            <a href="wajib_pajak.php">
-                Wajib Pajak
-            </a>
-
-            <a href="kendaraan.php">
-    Kendaraan
-</a>
-
-<a class="active" href="pembayaran.php">
-    Pembayaran
-</a>
-            <a href="arsip.php">
-                Arsip
-            </a>
-
-            <?php if($_SESSION['role'] == 'admin') { ?>
-
-                <a href="user.php">
-                    User
+                <a class="active" href="pembayaran.php">
+                    Pembayaran
                 </a>
-
-            <?php } ?>
-
-        </div>
-
-        <div class="logout">
-
-            <a href="../logout.php">
-                Keluar
-            </a>
-
-        </div>
-
-    </div>
-
-    <div class="main">
-
-        <div class="header">
-
-            <div class="user-info">
-
-                <span class="user-name">
-                    <?php echo $_SESSION['nama']; ?>
-                </span>
 
             </div>
 
         </div>
 
-        <div class="content">
+        <div class="main">
 
-            <h2 class="form-title">
-                Tambah Data Pembayaran
-            </h2>
+            <div class="header">
 
-           <form method="POST">
+                <div class="user-info">
 
-    <div class="form-grid">
+                    <span class="user-name">
+                        <?php echo $_SESSION['nama']; ?>
+                    </span>
 
-   <div class="form-card">
+                </div>
 
-    <label>ID Pembayaran</label>
+            </div>
 
-    <input
-    type="text"
-    value="<?php echo $id_otomatis; ?>"
-    readonly>
+            <div class="content">
 
-</div>
+                <h2 class="form-title">
+                    Tambah Data Pembayaran
+                </h2>
 
-<div class="form-card">
+                <form method="POST">
 
-    <label>Jenis</label>
+                    <div class="form-grid">
 
-    <select
-    name="jenis_pembayaran"
-    required>
+                        <div class="form-card">
 
-        <option value="">
-            Pilih Jenis
-        </option>
+                            <label>ID Pembayaran</label>
 
-        <option value="QRIS">
-            QRIS
-        </option>
+                            <input
+                                type="text"
+                                value="<?php echo $id_otomatis; ?>"
+                                readonly>
 
-        <option value="Transfer">
-            Transfer
-        </option>
+                        </div>
 
-        <option value="Tunai">
-            Tunai
-        </option>
+                        <div class="form-card">
 
-    </select>
+                            <label>Jenis</label>
 
-</div>
+                            <select
+                                name="jenis_pembayaran"
+                                required>
 
-        <div class="form-card">
+                                <option value="">
+                                    Pilih Jenis
+                                </option>
 
-    <label>Tanggal</label>
+                                <option value="QRIS">
+                                    QRIS
+                                </option>
 
-    <input
-    type="date"
-    name="tanggal_bayar"
-    required>
+                                <option value="Transfer">
+                                    Transfer
+                                </option>
 
-</div>
+                                <option value="Tunai">
+                                    Tunai
+                                </option>
 
-        <div class="form-card">
+                            </select>
 
-    <label>Total</label>
+                        </div>
 
-    <input
-type="number"
-name="total_bayar"
-min="0"
-required>
+                        <div class="form-card">
 
-</div>
+                            <label>Tanggal</label>
 
-       <div class="form-card">
+                            <input
+                                type="date"
+                                name="tanggal_bayar"
+                                required>
 
-    <label>ID Kendaraan</label>
+                        </div>
 
-    <select
-id="id_kendaraan"
-name="id_kendaraan"
-required>
+                        <div class="form-card">
 
-        <option value="">
-            Pilih Kendaraan
-        </option>
+                            <label>Total</label>
 
-        <?php
-        while($row = mysqli_fetch_assoc($kendaraan))
-        {
-        ?>
+                            <input
+                                type="number"
+                                name="total_bayar"
+                                min="0"
+                                required>
 
-        <option
-value="<?php echo $row['id_kendaraan']; ?>">
+                        </div>
 
-    K-<?php echo str_pad($row['id_kendaraan'],4,'0',STR_PAD_LEFT); ?>
-    -
-    <?php echo $row['no_polisi']; ?>
-    -
-    <?php echo $row['nama']; ?>
+                        <div class="form-card">
 
-</option>
+                            <label>No. Polisi</label>
 
-        <?php
-        }
-        ?>
+                            <select
+                                id="id_kendaraan"
+                                name="id_kendaraan"
+                                required>
 
-    </select>
+                                <option value="">
+                                    Pilih Kendaraan
+                                </option>
 
-</div>
+                                <?php
+                                while ($row = mysqli_fetch_assoc($kendaraan)) {
+                                ?>
 
-       <div class="form-card">
+                                    <option
+                                        value="<?php echo $row['id_kendaraan']; ?>">
 
-    <label>Status</label>
+                                        <?php echo $row['no_polisi']; ?>
 
-    <select
-    name="status_pembayaran"
-    required>
+                                    </option>
 
-        <option value="">
-            Pilih Status
-        </option>
+                                <?php
+                                }
+                                ?>
 
-        <option value="Lunas">
-            Lunas
-        </option>
+                            </select>
 
-        <option value="Menunggak">
-            Menunggak
-        </option>
+                        </div>
 
-    </select>
+                        <div class="form-card">
 
-</div>
+                            <label>Status</label>
 
-</div> <!-- form-grid -->
+                            <select
+                                name="status_pembayaran"
+                                required>
 
-<div class="button-group">
+                                <option value="">
+                                    Pilih Status
+                                </option>
 
-    <a
-    href="pembayaran.php"
-    class="btn-back">
+                                <option value="Lunas">
+                                    Lunas
+                                </option>
 
-        Kembali
+                                <option value="Menunggak">
+                                    Menunggak
+                                </option>
 
-    </a>
+                            </select>
 
-    <button
-    type="submit"
-    name="simpan"
-    class="btn-save">
+                        </div>
 
-        Simpan
+                    </div>
 
-    </button>
+                    <div class="button-group">
 
-</div>
+                        <a
+                            href="pembayaran.php"
+                            class="btn-back">
 
-</form>
+                            Kembali
+
+                        </a>
+
+                        <button
+                            type="submit"
+                            name="simpan"
+                            class="btn-save">
+
+                            Simpan
+
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
 
         </div>
 
     </div>
 
-</div>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
-<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script>
+        $(document).ready(function() {
 
-<script>
+            $('#id_kendaraan').select2({
+                placeholder: 'Cari Kendaraan',
+                width: '100%'
+            });
 
-$(document).ready(function(){
-
-    $('#id_kendaraan').select2({
-        placeholder: 'Cari Kendaraan',
-        width: '100%'
-    });
-
-});
-
-</script>
+        });
+    </script>
 
 </body>
 
@@ -314,8 +275,7 @@ $(document).ready(function(){
 
 <?php
 
-if(isset($_POST['simpan']))
-{
+if (isset($_POST['simpan'])) {
     $id_kendaraan = $_POST['id_kendaraan'];
     $tanggal_bayar = $_POST['tanggal_bayar'];
     $jenis_pembayaran = $_POST['jenis_pembayaran'];

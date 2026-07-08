@@ -1,11 +1,9 @@
 <?php
-
 session_start();
 
 require_once "../config/database.php";
 
-if(!isset($_SESSION['id_user']))
-{
+if (!isset($_SESSION['id_user'])) {
     header("Location: ../login.php");
     exit;
 }
@@ -21,8 +19,7 @@ $data = mysqli_query(
 
 $arsip = mysqli_fetch_assoc($data);
 
-if(file_exists("../uploads/" . $arsip['nama_file']))
-{
+if (file_exists("../uploads/" . $arsip['nama_file'])) {
     unlink("../uploads/" . $arsip['nama_file']);
 }
 
@@ -43,5 +40,3 @@ window.location='arsip.php';
 </script>
 
 ";
-
-?>

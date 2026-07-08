@@ -3,29 +3,26 @@ require_once "../config/database.php";
 
 $bulan = '';
 
-if(isset($_GET['bulan']))
-{
+if (isset($_GET['bulan'])) {
     $bulan = $_GET['bulan'];
 }
 
 $tahun = '';
 
-if(isset($_GET['tahun']))
-{
+if (isset($_GET['tahun'])) {
     $tahun = $_GET['tahun'];
 }
 
 $status = '';
 
-if(isset($_GET['status']))
-{
+if (isset($_GET['status'])) {
     $status = $_GET['status'];
 }
 
 $query = mysqli_query(
-$koneksi,
+    $koneksi,
 
-"SELECT
+    "SELECT
 pembayaran.*,
 kendaraan.no_polisi,
 wajib_pajak.nama
@@ -60,10 +57,10 @@ ORDER BY pembayaran.id_pembayaran DESC"
 );
 
 $total_kendaraan = mysqli_fetch_assoc(
-mysqli_query(
-$koneksi,
+    mysqli_query(
+        $koneksi,
 
-"SELECT COUNT(DISTINCT kendaraan.id_kendaraan) as total
+        "SELECT COUNT(DISTINCT kendaraan.id_kendaraan) as total
 
 FROM pembayaran
 
@@ -87,13 +84,14 @@ AND
     '$tahun' = ''
     OR YEAR(pembayaran.tanggal_bayar) = '$tahun'
 )"
-));
+    )
+);
 
 $kendaraan_aktif = mysqli_fetch_assoc(
-mysqli_query(
-$koneksi,
+    mysqli_query(
+        $koneksi,
 
-"SELECT COUNT(DISTINCT kendaraan.id_kendaraan) as total
+        "SELECT COUNT(DISTINCT kendaraan.id_kendaraan) as total
 
 FROM pembayaran
 
@@ -119,13 +117,14 @@ AND
     '$tahun' = ''
     OR YEAR(pembayaran.tanggal_bayar) = '$tahun'
 )"
-));
+    )
+);
 
 $pembayaran_lunas = mysqli_fetch_assoc(
-mysqli_query(
-$koneksi,
+    mysqli_query(
+        $koneksi,
 
-"SELECT COUNT(*) as total
+        "SELECT COUNT(*) as total
 
 FROM pembayaran
 
@@ -142,13 +141,14 @@ AND
     '$tahun' = ''
     OR YEAR(tanggal_bayar) = '$tahun'
 )"
-));
+    )
+);
 
 $pembayaran_menunggak = mysqli_fetch_assoc(
-mysqli_query(
-$koneksi,
+    mysqli_query(
+        $koneksi,
 
-"SELECT COUNT(*) as total
+        "SELECT COUNT(*) as total
 
 FROM pembayaran
 
@@ -165,13 +165,14 @@ AND
     '$tahun' = ''
     OR YEAR(tanggal_bayar) = '$tahun'
 )"
-));
+    )
+);
 
 $total_pembayaran = mysqli_fetch_assoc(
-mysqli_query(
-$koneksi,
+    mysqli_query(
+        $koneksi,
 
-"SELECT SUM(total_bayar) as total
+        "SELECT SUM(total_bayar) as total
 
 FROM pembayaran
 
@@ -192,174 +193,169 @@ AND
     '$tahun' = ''
     OR YEAR(tanggal_bayar) = '$tahun'
 )"
-));
+    )
+);
 
 ?>
 
 <!DOCTYPE html>
 <html>
+
 <head>
-<title>Cetak Laporan</title>
+    <title>Cetak Laporan</title>
 
-<style>
+    <style>
+        body {
+            font-family: Arial;
+        }
 
-body{
-    font-family: Arial;
-}
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
 
-table{
-    width:100%;
-    border-collapse:collapse;
-}
-
-th,td{
-    border:1px solid #000;
-    padding:8px;
-}
-
-</style>
+        th,
+        td {
+            border: 1px solid #000;
+            padding: 8px;
+        }
+    </style>
 
 </head>
+
 <body>
 
-<h3 align="center">
-SAMSAT BATU AJI
-</h3>
+    <h3 align="center">
+        SAMSAT BATU AJI
+    </h3>
 
-<h2 align="center">
-LAPORAN DATA PEMBAYARAN
-</h2>
+    <h2 align="center">
+        LAPORAN DATA PEMBAYARAN
+    </h2>
 
-<p>
-Tanggal Cetak :
-<?php echo date('d F Y H:i'); ?>
-</p>
+    <p>
+        Tanggal Cetak :
+        <?php echo date('d F Y H:i'); ?>
+    </p>
 
-<p>
-Periode :
+    <p>
+        Periode :
 
-<?php
+        <?php
 
-$nama_bulan = array(
-    1 => "Januari",
-    2 => "Februari",
-    3 => "Maret",
-    4 => "April",
-    5 => "Mei",
-    6 => "Juni",
-    7 => "Juli",
-    8 => "Agustus",
-    9 => "September",
-    10 => "Oktober",
-    11 => "November",
-    12 => "Desember"
-);
+        $nama_bulan = array(
+            1 => "Januari",
+            2 => "Februari",
+            3 => "Maret",
+            4 => "April",
+            5 => "Mei",
+            6 => "Juni",
+            7 => "Juli",
+            8 => "Agustus",
+            9 => "September",
+            10 => "Oktober",
+            11 => "November",
+            12 => "Desember"
+        );
 
-if($bulan != '' && $tahun != '')
-{
-    echo $nama_bulan[$bulan]." ".$tahun;
-}
-elseif($bulan != '')
-{
-    echo $nama_bulan[$bulan]." (Semua Tahun)";
-}
-elseif($tahun != '')
-{
-    echo "Tahun ".$tahun;
-}
-else
-{
-    echo "Semua Periode";
-}
+        if ($bulan != '' && $tahun != '') {
+            echo $nama_bulan[$bulan] . " " . $tahun;
+        } elseif ($bulan != '') {
+            echo $nama_bulan[$bulan] . " (Semua Tahun)";
+        } elseif ($tahun != '') {
+            echo "Tahun " . $tahun;
+        } else {
+            echo "Semua Periode";
+        }
 
-?>
+        ?>
 
-</p>
+    </p>
 
-<hr>
+    <hr>
 
-<h3>Ringkasan Laporan</h3>
+    <h3>Ringkasan Laporan</h3>
 
-<p>
-Total Kendaraan :
-<?php echo $total_kendaraan['total']; ?>
-</p>
+    <p>
+        Total Kendaraan :
+        <?php echo $total_kendaraan['total']; ?>
+    </p>
 
-<p>
-Kendaraan Aktif :
-<?php echo $kendaraan_aktif['total']; ?>
-</p>
+    <p>
+        Kendaraan Aktif :
+        <?php echo $kendaraan_aktif['total']; ?>
+    </p>
 
-<p>
-Pembayaran Lunas :
-<?php echo $pembayaran_lunas['total']; ?>
-</p>
+    <p>
+        Pembayaran Lunas :
+        <?php echo $pembayaran_lunas['total']; ?>
+    </p>
 
-<p>
-Pembayaran Menunggak :
-<?php echo $pembayaran_menunggak['total']; ?>
-</p>
+    <p>
+        Pembayaran Menunggak :
+        <?php echo $pembayaran_menunggak['total']; ?>
+    </p>
 
-<p>
-Total Pembayaran :
-Rp <?php echo number_format($total_pembayaran['total'],0,',','.'); ?>
-</p>
+    <p>
+        Total Pembayaran :
+        Rp <?php echo number_format($total_pembayaran['total'], 0, ',', '.'); ?>
+    </p>
 
-<hr>
+    <hr>
 
-<table>
+    <table>
 
-<tr>
-<th>No</th>
-<th>Tanggal</th>
-<th>No Polisi</th>
-<th>Nama WP</th>
-<th>Total</th>
-<th>Status</th>
-</tr>
+        <tr>
+            <th>No</th>
+            <th>Tanggal</th>
+            <th>No Polisi</th>
+            <th>Nama WP</th>
+            <th>Total</th>
+            <th>Status</th>
+        </tr>
 
-<?php
-$no=1;
+        <?php
+        $no = 1;
 
-while($data=mysqli_fetch_assoc($query))
-{
-?>
+        while ($data = mysqli_fetch_assoc($query)) {
+        ?>
 
-<tr>
+            <tr>
 
-<td><?= $no++; ?></td>
+                <td><?= $no++; ?></td>
 
-<td>
-<?= date('d-m-Y',strtotime($data['tanggal_bayar'])); ?>
-</td>
+                <td>
+                    <?= date('d-m-Y', strtotime($data['tanggal_bayar'])); ?>
+                </td>
 
-<td>
-<?= $data['no_polisi']; ?>
-</td>
+                <td>
+                    <?= $data['no_polisi']; ?>
+                </td>
 
-<td>
-<?= $data['nama']; ?>
-</td>
+                <td>
+                    <?= $data['nama']; ?>
+                </td>
 
-<td>
-Rp <?= number_format($data['total_bayar'],0,',','.'); ?>
-</td>
+                <td>
+                    Rp <?= number_format($data['total_bayar'], 0, ',', '.'); ?>
+                </td>
 
-<td>
-<?= $data['status_pembayaran']; ?>
-</td>
+                <td>
+                    <?= $data['status_pembayaran']; ?>
+                </td>
 
-</tr>
+            </tr>
 
-<?php
-}
-?>
+        <?php
+        }
+        ?>
 
-</table>
+    </table>
 
-<script>
-window.print();
-</script>
+    <script>
+        window.print();
+    </script>
 
 </body>
+
 </html>

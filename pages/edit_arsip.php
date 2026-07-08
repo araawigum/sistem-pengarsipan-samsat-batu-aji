@@ -6,23 +6,24 @@
     $id = $_GET['id'];
 
     $data_arsip = mysqli_query(
-    $koneksi,
-    "SELECT *
+        $koneksi,
+        "SELECT *
     FROM dokumen
     WHERE id_dokumen='$id'"
-);
+    );
 
-$data = mysqli_fetch_assoc($data_arsip);
+    $data = mysqli_fetch_assoc($data_arsip);
 
-$ext = strtolower(
-pathinfo(
-    $data['nama_file'],
-    PATHINFO_EXTENSION
-));
+    $ext = strtolower(
+        pathinfo(
+            $data['nama_file'],
+            PATHINFO_EXTENSION
+        )
+    );
 
     $pembayaran = mysqli_query(
-    $koneksi,
-    "SELECT
+        $koneksi,
+        "SELECT
         pembayaran.*,
         kendaraan.no_polisi
 
@@ -32,10 +33,9 @@ pathinfo(
     ON pembayaran.id_kendaraan = kendaraan.id_kendaraan
 
     ORDER BY pembayaran.id_pembayaran DESC"
-);
+    );
 
-    if(!isset($_SESSION['id_user']))
-    {
+    if (!isset($_SESSION['id_user'])) {
         header("Location: ../login.php");
         exit;
     }
@@ -48,364 +48,325 @@ pathinfo(
 
     <head>
 
-    <title>Edit Data Arsip</title>
+        <title>Edit Data Arsip</title>
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-    <link rel="stylesheet" href="../assets/css/style.css?v=10">
+        <link rel="stylesheet" href="../assets/css/style.css?v=10">
 
-    <link
-href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css"
-rel="stylesheet">
+        <link
+            href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css"
+            rel="stylesheet">
 
     </head>
 
     <body>
 
-    <div class="container">
+        <div class="container">
 
-    <div class="sidebar">
+            <div class="sidebar">
 
-        <div class="logo">
-            SAMSAT BATU AJI
-        </div>
+                <div class="logo">
+                    SAMSAT BATU AJI
+                </div>
 
-        <div class="menu">
+                <div class="menu">
 
-            <a href="dashboard.php">
-                Dashboard
-            </a>
+                    <a class="active" href="arsip.php">
+                        Arsip
+                    </a>
 
-            <a href="wajib_pajak.php">
-    Wajib Pajak
-</a>
-
-<a href="kendaraan.php">
-    Kendaraan
-</a>
-
-<a href="pembayaran.php">
-    Pembayaran
-</a>
-
-            <a class="active" href="arsip.php">
-    Arsip
-            </a>
-
-            <?php if($_SESSION['role'] == 'admin') { ?>
-
-                <a href="user.php">
-                    User
-                </a>
-
-            <?php } ?>
-
-        </div>
-
-        <div class="logout">
-
-            <a href="../logout.php">
-                Keluar
-            </a>
-
-        </div>
-
-    </div>
-
-    <div class="main">
-
-        <div class="header">
-
-            <div class="user-info">
-
-                <span class="user-name">
-                    <?php echo $_SESSION['nama']; ?>
-                </span>
+                </div>
 
             </div>
 
-        </div>
+            <div class="main">
 
-        <div class="content">
+                <div class="header">
 
-        <h2 class="form-title">
-    Edit Data Arsip
-</h2>
+                    <div class="user-info">
 
-<form method="POST">
+                        <span class="user-name">
+                            <?php echo $_SESSION['nama']; ?>
+                        </span>
 
-<div class="edit-layout">
+                    </div>
 
-<div class="form-section">
+                </div>
 
-    <div class="form-card">
+                <div class="content">
 
-        <label>ID Arsip</label>
+                    <h2 class="form-title">
+                        Edit Data Arsip
+                    </h2>
 
-        <input
-        type="text"
-        value="A-<?php echo str_pad($data['id_dokumen'],4,'0',STR_PAD_LEFT); ?>"
-        readonly>
+                    <form method="POST">
 
-    </div>
+                        <div class="edit-layout">
 
-    <div class="form-card">
+                            <div class="form-section">
 
-        <label>Nama File</label>
+                                <div class="form-card">
 
-<input
-type="text"
-value="<?php echo $data['nama_file']; ?>"
-readonly>
+                                    <label>ID Arsip</label>
 
-    </div>
+                                    <input
+                                        type="text"
+                                        value="A-<?php echo str_pad($data['id_dokumen'], 4, '0', STR_PAD_LEFT); ?>"
+                                        readonly>
 
-    <div class="form-card">
+                                </div>
 
-        <label>Jenis Dokumen</label>
+                                <div class="form-card">
 
-        <select
-        name="jenis_dokumen"
-        required>
+                                    <label>Nama File</label>
 
-            <option value="">
-                Pilih Jenis Dokumen
-            </option>
+                                    <input
+                                        type="text"
+                                        value="<?php echo $data['nama_file']; ?>"
+                                        readonly>
 
-            <option
-value="STNK"
-<?php if($data['jenis_dokumen']=='STNK') echo 'selected'; ?>>
+                                </div>
 
-    STNK
+                                <div class="form-card">
 
-</option>
+                                    <label>Jenis Dokumen</label>
 
-<option
-value="Lainnya"
-<?php if($data['jenis_dokumen']=='Lainnya') echo 'selected'; ?>>
+                                    <select
+                                        name="jenis_dokumen"
+                                        required>
 
-    Lainnya
+                                        <option value="">
+                                            Pilih Jenis Dokumen
+                                        </option>
 
-</option>
+                                        <option
+                                            value="STNK"
+                                            <?php if ($data['jenis_dokumen'] == 'STNK') echo 'selected'; ?>>
 
-        </select>
+                                            STNK
 
-    </div>
+                                        </option>
 
-    <div class="form-card">
+                                        <option
+                                            value="Lainnya"
+                                            <?php if ($data['jenis_dokumen'] == 'Lainnya') echo 'selected'; ?>>
 
-        <label>ID Pembayaran</label>
+                                            Lainnya
 
-        <select
-id="id_pembayaran"
-name="id_pembayaran"
-required>
+                                        </option>
 
-            <option value="">
-                Pilih Pembayaran
-            </option>
+                                    </select>
 
-            <?php
-            while($row = mysqli_fetch_assoc($pembayaran))
-            {
-            ?>
+                                </div>
 
-           <option
-value="<?php echo $row['id_pembayaran']; ?>"
+                                <div class="form-card">
 
-<?php
-if($row['id_pembayaran'] == $data['id_pembayaran'])
-{
-    echo "selected";
-}
-?>>
+                                    <label>ID Pembayaran</label>
 
-    P-<?php echo str_pad($row['id_pembayaran'],4,'0',STR_PAD_LEFT); ?>
--
-<?php echo $row['no_polisi']; ?>
+                                    <select
+                                        id="id_pembayaran"
+                                        name="id_pembayaran"
+                                        required>
 
-</option>
+                                        <option value="">
+                                            Pilih Pembayaran
+                                        </option>
 
-            <?php
-            }
-            ?>
+                                        <?php
+                                        while ($row = mysqli_fetch_assoc($pembayaran)) {
+                                        ?>
 
-        </select>
+                                            <option
+                                                value="<?php echo $row['id_pembayaran']; ?>"
 
-    </div>
+                                                <?php
+                                                if ($row['id_pembayaran'] == $data['id_pembayaran']) {
+                                                    echo "selected";
+                                                }
+                                                ?>>
 
-    <div class="form-card">
+                                                P-<?php echo str_pad($row['id_pembayaran'], 4, '0', STR_PAD_LEFT); ?>
+                                                -
+                                                <?php echo $row['no_polisi']; ?>
 
-    <label>Tanggal Upload</label>
+                                            </option>
 
-    <input
-    type="datetime-local"
-    name="tanggal_upload"
-    value="<?php echo date('Y-m-d\TH:i', strtotime($data['tanggal_upload'])); ?>"
-    required>
+                                        <?php
+                                        }
+                                        ?>
 
-</div>
+                                    </select>
 
-</div>
+                                </div>
 
-<div class="preview-section">
+                                <div class="form-card">
 
-    <label>Preview File</label>
+                                    <label>Tanggal Upload</label>
 
-    <p style="
-margin-top:6px;
-margin-bottom:12px;
-font-size:13px;
-color:#666;
-">
-<?php echo $data['nama_file']; ?>
-</p>
+                                    <input
+                                        type="datetime-local"
+                                        name="tanggal_upload"
+                                        value="<?php echo date('Y-m-d\TH:i', strtotime($data['tanggal_upload'])); ?>"
+                                        required>
 
-    <div class="preview-box">
+                                </div>
 
-<?php
-if(file_exists("../uploads/".$data['nama_file']))
-{
-?>
+                            </div>
 
-    <?php if($ext == 'pdf') { ?>
+                            <div class="preview-section">
 
-        <iframe
-        src="../uploads/<?php echo $data['nama_file']; ?>"
-        width="100%"
-        height="100%"
-        style="border:none;">
-        </iframe>
+                                <label>Preview File</label>
 
-    <?php } elseif(
-        $ext == 'jpg' ||
-        $ext == 'jpeg' ||
-        $ext == 'png'
-    ) { ?>
+                                <p style="
+    margin-top:6px;
+    margin-bottom:12px;
+    font-size:13px;
+    color:#666;
+    ">
+                                    <?php echo $data['nama_file']; ?>
+                                </p>
 
-        <img
-        src="../uploads/<?php echo $data['nama_file']; ?>"
-        style="
+                                <div class="preview-box">
+
+                                    <?php
+                                    if (file_exists("../uploads/" . $data['nama_file'])) {
+                                    ?>
+
+                                        <?php if ($ext == 'pdf') { ?>
+
+                                            <iframe
+                                                src="../uploads/<?php echo $data['nama_file']; ?>"
+                                                width="100%"
+                                                height="100%"
+                                                style="border:none;">
+                                            </iframe>
+
+                                        <?php } elseif (
+                                            $ext == 'jpg' ||
+                                            $ext == 'jpeg' ||
+                                            $ext == 'png'
+                                        ) { ?>
+
+                                            <img
+                                                src="../uploads/<?php echo $data['nama_file']; ?>"
+                                                style="
         width:100%;
         height:100%;
         object-fit:contain;
         ">
 
-    <?php } else { ?>
+                                        <?php } else { ?>
 
-        <div style="padding:20px;">
+                                            <div style="padding:20px;">
 
-            File tidak dapat dipreview.
+                                                File tidak dapat dipreview.
 
-            <br><br>
+                                                <br><br>
 
-            <a
-            href="../uploads/<?php echo $data['nama_file']; ?>"
-            target="_blank"
-            class="btn-edit">
+                                                <a
+                                                    href="../uploads/<?php echo $data['nama_file']; ?>"
+                                                    target="_blank"
+                                                    class="btn-edit">
 
-                Download File
+                                                    Download File
 
-            </a>
+                                                </a>
+
+                                            </div>
+
+                                        <?php } ?>
+
+                                    <?php
+                                    } else {
+                                    ?>
+
+                                        <p style="padding:20px;">
+                                            File tidak ditemukan.
+                                        </p>
+
+                                    <?php
+                                    }
+                                    ?>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="button-group">
+
+                            <a
+                                href="hapus_arsip.php?id=<?php echo $id; ?>"
+                                class="btn-delete"
+                                onclick="return confirm('Hapus arsip ini?')">
+
+                                Hapus
+
+                            </a>
+
+                            <a
+                                href="arsip.php"
+                                class="btn-back">
+
+                                Kembali
+
+                            </a>
+
+                            <button
+                                type="submit"
+                                name="simpan"
+                                class="btn-save">
+
+                                Simpan
+
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
 
         </div>
 
-    <?php } ?>
+        <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
-<?php
-}
-else
-{
-?>
+        <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
-    <p style="padding:20px;">
-        File tidak ditemukan.
-    </p>
+        <script>
+            $(document).ready(function() {
 
-<?php
-}
-?>
+                $('#id_pembayaran').select2({
+                    placeholder: 'Cari Pembayaran',
+                    width: '100%'
+                });
 
-</div>
-
-</div>
-
-</div>
-
-<div class="button-group">
-
-<a
-href="hapus_arsip.php?id=<?php echo $id; ?>"
-class="btn-delete"
-onclick="return confirm('Hapus arsip ini?')">
-
-    Hapus
-
-</a>
-
-    <a
-    href="arsip.php"
-    class="btn-back">
-
-        Kembali
-
-    </a>
-
-    <button
-    type="submit"
-    name="simpan"
-    class="btn-save">
-
-        Simpan
-
-    </button>
-
-</div>
-
-</form>
-
-        </div>
-
-    </div>
-
-    </div>
-
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-
-<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-
-<script>
-
-$(document).ready(function(){
-
-    $('#id_pembayaran').select2({
-        placeholder: 'Cari Pembayaran',
-        width: '100%'
-    });
-
-});
-
-</script>
+            });
+        </script>
 
     </body>
+
     </html>
 
     <?php
 
-if(isset($_POST['simpan']))
-{
-    $id_pembayaran = $_POST['id_pembayaran'];
-    $jenis_dokumen = $_POST['jenis_dokumen'];
-    $tanggal_upload = $_POST['tanggal_upload'];
+    if (isset($_POST['simpan'])) {
+        $id_pembayaran = $_POST['id_pembayaran'];
+        $jenis_dokumen = $_POST['jenis_dokumen'];
+        $tanggal_upload = $_POST['tanggal_upload'];
 
-    $nama_file = $data['nama_file'];
+        $nama_file = $data['nama_file'];
 
-    $data_relasi = mysqli_query(
-    $koneksi,
-    "SELECT
+        $data_relasi = mysqli_query(
+            $koneksi,
+            "SELECT
     kendaraan.no_polisi,
     wajib_pajak.nama
     FROM pembayaran
@@ -414,28 +375,28 @@ if(isset($_POST['simpan']))
     LEFT JOIN wajib_pajak
     ON kendaraan.id_wajib_pajak = wajib_pajak.id_wajib_pajak
     WHERE pembayaran.id_pembayaran='$id_pembayaran'"
-);
+        );
 
-$relasi = mysqli_fetch_assoc($data_relasi);
+        $relasi = mysqli_fetch_assoc($data_relasi);
 
-    $nama_wp = str_replace(
-    ' ',
-    '',
-    $relasi['nama']
-);
+        $nama_wp = str_replace(
+            ' ',
+            '',
+            $relasi['nama']
+        );
 
-    mysqli_query(
-    $koneksi,
-    "UPDATE dokumen
+        mysqli_query(
+            $koneksi,
+            "UPDATE dokumen
     SET
         id_pembayaran='$id_pembayaran',
         jenis_dokumen='$jenis_dokumen',
         nama_file='$nama_file',
         tanggal_upload='$tanggal_upload'
     WHERE id_dokumen='$id'"
-);
+        );
 
-    echo "
+        echo "
 
     <script>
 
@@ -446,6 +407,6 @@ $relasi = mysqli_fetch_assoc($data_relasi);
     </script>
 
     ";
-}
+    }
 
-?>
+    ?>

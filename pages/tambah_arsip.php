@@ -4,25 +4,25 @@
     require_once "../config/database.php";
 
     $id_query = mysqli_query(
-    $koneksi,
-    "SELECT AUTO_INCREMENT
+        $koneksi,
+        "SELECT AUTO_INCREMENT
     FROM information_schema.TABLES
     WHERE TABLE_SCHEMA='db_arsip_samsat'
     AND TABLE_NAME='dokumen'"
-);
+    );
 
-$id_data = mysqli_fetch_assoc($id_query);
+    $id_data = mysqli_fetch_assoc($id_query);
 
-$id_otomatis = "A-" . str_pad(
-    $id_data['AUTO_INCREMENT'],
-    4,
-    '0',
-    STR_PAD_LEFT
-);
+    $id_otomatis = "A-" . str_pad(
+        $id_data['AUTO_INCREMENT'],
+        4,
+        '0',
+        STR_PAD_LEFT
+    );
 
     $pembayaran = mysqli_query(
-    $koneksi,
-    "SELECT
+        $koneksi,
+        "SELECT
         pembayaran.*,
         kendaraan.no_polisi
 
@@ -32,10 +32,9 @@ $id_otomatis = "A-" . str_pad(
     ON pembayaran.id_kendaraan = kendaraan.id_kendaraan
 
     ORDER BY pembayaran.id_pembayaran DESC"
-);
+    );
 
-    if(!isset($_SESSION['id_user']))
-    {
+    if (!isset($_SESSION['id_user'])) {
         header("Location: ../login.php");
         exit;
     }
@@ -48,296 +47,258 @@ $id_otomatis = "A-" . str_pad(
 
     <head>
 
-    <title>Tambah Data Arsip</title>
+        <title>Tambah Data Arsip</title>
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-    <link rel="stylesheet" href="../assets/css/style.css?v=10">
+        <link rel="stylesheet" href="../assets/css/style.css?v=10">
 
-    <link
-href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css"
-rel="stylesheet">
+        <link
+            href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css"
+            rel="stylesheet">
 
     </head>
 
     <body>
 
-    <div class="container">
+        <div class="container">
 
-    <div class="sidebar">
+            <div class="sidebar">
 
-        <div class="logo">
-            SAMSAT BATU AJI
-        </div>
+                <div class="logo">
+                    SAMSAT BATU AJI
+                </div>
 
-        <div class="menu">
+                <div class="menu">
 
-            <a href="dashboard.php">
-                Dashboard
-            </a>
+                    <a class="active" href="arsip.php">
+                        Arsip
+                    </a>
 
-            <a href="wajib_pajak.php">
-    Wajib Pajak
-</a>
+                </div>
 
-<a href="kendaraan.php">
-    Kendaraan
-</a>
+            </div>
 
-<a href="pembayaran.php">
-    Pembayaran
-</a>
+            <div class="main">
 
-            <a class="active" href="arsip.php">
-    Arsip
-            </a>
+                <div class="header">
 
-            <?php if($_SESSION['role'] == 'admin') { ?>
+                    <div class="user-info">
 
-                <a href="user.php">
-                    User
-                </a>
+                        <span class="user-name">
+                            <?php echo $_SESSION['nama']; ?>
+                        </span>
 
-            <?php } ?>
+                    </div>
 
-        </div>
+                </div>
 
-        <div class="logout">
+                <div class="content">
 
-            <a href="../logout.php">
-                Keluar
-            </a>
+                    <h2 class="form-title">
+                        Tambah Data Arsip
+                    </h2>
 
-        </div>
+                    <form method="POST" enctype="multipart/form-data">
 
-    </div>
+                        <div class="upload-layout">
 
-    <div class="main">
+                            <div class="upload-form">
 
-        <div class="header">
+                                <div class="form-card">
 
-            <div class="user-info">
+                                    <label>ID Arsip</label>
 
-                <span class="user-name">
-                    <?php echo $_SESSION['nama']; ?>
-                </span>
+                                    <input
+                                        type="text"
+                                        value="<?php echo $id_otomatis; ?>"
+                                        readonly>
+
+                                </div>
+
+                                <div class="form-card">
+
+                                    <label>Nama Arsip</label>
+
+                                    <input
+                                        type="text"
+                                        name="nama_arsip"
+                                        required>
+
+                                </div>
+
+                                <div class="form-card">
+
+                                    <label>Jenis Dokumen</label>
+
+                                    <select
+                                        name="jenis_dokumen"
+                                        required>
+
+                                        <option value="">
+                                            Pilih Jenis Dokumen
+                                        </option>
+
+                                        <option value="STNK">
+                                            STNK
+                                        </option>
+
+                                        <option value="Lainnya">
+                                            Lainnya
+                                        </option>
+
+                                    </select>
+
+                                </div>
+
+                                <div class="form-card">
+
+                                    <label>ID Pembayaran</label>
+
+                                    <select
+                                        id="id_pembayaran"
+                                        name="id_pembayaran"
+                                        required>
+
+                                        <option value="">
+                                            Pilih Pembayaran
+                                        </option>
+
+                                        <?php
+                                        while ($row = mysqli_fetch_assoc($pembayaran)) {
+                                        ?>
+
+                                            <option
+                                                value="<?php echo $row['id_pembayaran']; ?>">
+
+                                                P-<?php echo str_pad($row['id_pembayaran'], 4, '0', STR_PAD_LEFT); ?>
+                                                -
+                                                <?php echo $row['no_polisi']; ?>
+
+                                            </option>
+
+                                        <?php
+                                        }
+                                        ?>
+
+                                    </select>
+
+                                </div>
+
+                                <div class="form-card">
+
+                                    <label>Tanggal Upload</label>
+
+                                    <input
+                                        type="datetime-local"
+                                        name="tanggal_upload"
+                                        required>
+
+                                </div>
+
+                            </div>
+
+                            <div class="upload-preview">
+
+                                <label>Upload File</label>
+
+                                <label
+                                    for="file"
+                                    class="upload-box">
+
+                                    <div class="upload-icon">+</div>
+
+                                </label>
+
+                                <p id="file-name">
+                                    Belum ada file dipilih
+                                </p>
+
+                                <input
+                                    type="file"
+                                    id="file"
+                                    name="file"
+                                    class="file-input"
+                                    required>
+
+                            </div>
+
+                        </div>
+
+                        <div class="button-group">
+
+                            <a
+                                href="arsip.php"
+                                class="btn-back">
+
+                                Kembali
+
+                            </a>
+
+                            <button
+                                type="submit"
+                                name="simpan"
+                                class="btn-save">
+
+                                Simpan
+
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                </div>
 
             </div>
 
         </div>
 
-        <div class="content">
+        <script>
+            document.getElementById('file').addEventListener('change', function() {
 
-        <h2 class="form-title">
-    Tambah Data Arsip
-</h2>
+                if (this.files.length > 0) {
+                    document.getElementById('file-name').innerText =
+                        this.files[0].name;
+                }
 
-<form method="POST" enctype="multipart/form-data">
+            });
+        </script>
 
-<div class="upload-layout">
+        <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
-<div class="upload-form">
+        <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
-    <div class="form-card">
+        <script>
+            $(document).ready(function() {
 
-        <label>ID Arsip</label>
+                $('#id_pembayaran').select2({
+                    placeholder: 'Cari Pembayaran',
+                    width: '100%'
+                });
 
-        <input
-        type="text"
-        value="<?php echo $id_otomatis; ?>"
-        readonly>
+            });
+        </script>
 
-    </div>
+    </body>
 
-    <div class="form-card">
-
-        <label>Nama Arsip</label>
-
-        <input
-        type="text"
-        name="nama_arsip"
-        required>
-
-    </div>
-
-    <div class="form-card">
-
-        <label>Jenis Dokumen</label>
-
-        <select
-        name="jenis_dokumen"
-        required>
-
-            <option value="">
-                Pilih Jenis Dokumen
-            </option>
-
-            <option value="STNK">
-                STNK
-            </option>
-
-            <option value="Lainnya">
-                Lainnya
-            </option>
-
-        </select>
-
-    </div>
-
-    <div class="form-card">
-
-        <label>ID Pembayaran</label>
-
-        <select
-id="id_pembayaran"
-name="id_pembayaran"
-required>
-
-            <option value="">
-                Pilih Pembayaran
-            </option>
-
-            <?php
-            while($row = mysqli_fetch_assoc($pembayaran))
-            {
-            ?>
-
-            <option
-value="<?php echo $row['id_pembayaran']; ?>">
-
-    P-<?php echo str_pad($row['id_pembayaran'],4,'0',STR_PAD_LEFT); ?>
-    -
-    <?php echo $row['no_polisi']; ?>
-
-</option>
-
-            <?php
-            }
-            ?>
-
-        </select>
-
-    </div>
-
-    <div class="form-card">
-
-        <label>Tanggal Upload</label>
-
-        <input
-        type="datetime-local"
-        name="tanggal_upload"
-        required>
-
-    </div>
-
-    </div>
-
-<div class="upload-preview">
-
-    <label>Upload File</label>
-
-    <label
-for="file"
-class="upload-box">
-
-    <div class="upload-icon">+</div>
-
-</label>
-
-    <p id="file-name">
-        Belum ada file dipilih
-    </p>
-
-    <input
-    type="file"
-    id="file"
-    name="file"
-    class="file-input"
-    required>
-
-</div>
-
-</div>
-
-<div class="button-group">
-
-    <a
-    href="arsip.php"
-    class="btn-back">
-
-        Kembali
-
-    </a>
-
-    <button
-    type="submit"
-    name="simpan"
-    class="btn-save">
-
-        Simpan
-
-    </button>
-
-</div>
-
-</form>
-
-        </div>
-
-    </div>
-
-    </div>
-
-<script>
-
-document.getElementById('file').addEventListener('change', function(){
-
-    if(this.files.length > 0)
-    {
-        document.getElementById('file-name').innerText =
-        this.files[0].name;
-    }
-
-});
-
-</script>
-
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-
-<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-
-<script>
-
-$(document).ready(function(){
-
-    $('#id_pembayaran').select2({
-        placeholder: 'Cari Pembayaran',
-        width: '100%'
-    });
-
-});
-
-</script>
-
-</body>
-</html>
+    </html>
 
     <?php
 
-if(isset($_POST['simpan']))
-{
-    $id_pembayaran = $_POST['id_pembayaran'];
-    $jenis_dokumen = $_POST['jenis_dokumen'];
-    $tanggal_upload = $_POST['tanggal_upload'];
+    if (isset($_POST['simpan'])) {
+        $id_pembayaran = $_POST['id_pembayaran'];
+        $jenis_dokumen = $_POST['jenis_dokumen'];
+        $tanggal_upload = $_POST['tanggal_upload'];
 
-    $nama_arsip = $_POST['nama_arsip'];
+        $nama_arsip = $_POST['nama_arsip'];
 
-    $data_relasi = mysqli_query(
-    $koneksi,
-    "SELECT
+        $data_relasi = mysqli_query(
+            $koneksi,
+            "SELECT
     kendaraan.no_polisi,
     wajib_pajak.nama
     FROM pembayaran
@@ -346,67 +307,65 @@ if(isset($_POST['simpan']))
     LEFT JOIN wajib_pajak
     ON kendaraan.id_wajib_pajak = wajib_pajak.id_wajib_pajak
     WHERE pembayaran.id_pembayaran='$id_pembayaran'"
-);
+        );
 
-$relasi = mysqli_fetch_assoc($data_relasi);
+        $relasi = mysqli_fetch_assoc($data_relasi);
 
-    $tmp_file = $_FILES['file']['tmp_name'];
+        $tmp_file = $_FILES['file']['tmp_name'];
 
-$ekstensi = pathinfo(
-    $_FILES['file']['name'],
-    PATHINFO_EXTENSION
-);
+        $ekstensi = pathinfo(
+            $_FILES['file']['name'],
+            PATHINFO_EXTENSION
+        );
 
-$nama_wp = str_replace(
-    ' ',
-    '',
-    $relasi['nama']
-);
+        $nama_wp = str_replace(
+            ' ',
+            '',
+            $relasi['nama']
+        );
 
-$nama_file =
-$nama_arsip .
-"_" .
-$relasi['no_polisi'] .
-"_" .
-$nama_wp .
-"_" .
-date('YmdHis') .
-"." .
-$ekstensi;
+        $nama_file =
+            $nama_arsip .
+            "_" .
+            $relasi['no_polisi'] .
+            "_" .
+            $nama_wp .
+            "_" .
+            date('YmdHis') .
+            "." .
+            $ekstensi;
 
-    if($jenis_dokumen == "STNK")
-{
-    $nama_file =
-    "STNK_" .
-    $relasi['no_polisi'] .
-    "_" .
-    $nama_wp .
-    "_" .
-    date('YmdHis') .
-    "." .
-    $ekstensi;
-}
+        if ($jenis_dokumen == "STNK") {
+            $nama_file =
+                "STNK_" .
+                $relasi['no_polisi'] .
+                "_" .
+                $nama_wp .
+                "_" .
+                date('YmdHis') .
+                "." .
+                $ekstensi;
+        }
 
-$allowed = ['pdf','jpg','jpeg','png'];
+        $allowed = ['pdf', 'jpg', 'jpeg', 'png'];
 
-if(!in_array(strtolower($ekstensi), $allowed))
-{
-    echo "
+        if (!in_array(strtolower($ekstensi), $allowed)) {
+            echo "
     <script>
         alert('Format file tidak didukung');
     </script>
     ";
-    exit;
-}
+            exit;
+        }
 
-move_uploaded_file(
-    $tmp_file,
-    "../uploads/" . $nama_file
-);
+        move_uploaded_file(
+            $tmp_file,
+            "../uploads/" . $nama_file
+        );
 
-    mysqli_query(
-        $koneksi,
-        "INSERT INTO dokumen
+        mysqli_query(
+            $koneksi,
+            "INSERT INTO dokumen
         (
             id_pembayaran,
             jenis_dokumen,
@@ -420,9 +379,9 @@ move_uploaded_file(
             '$nama_file',
             '$tanggal_upload'
         )"
-    );
+        );
 
-    echo "
+        echo "
 
     <script>
 
@@ -433,6 +392,6 @@ move_uploaded_file(
     </script>
 
     ";
-}
+    }
 
-?>
+    ?>

@@ -3,28 +3,10 @@ session_start();
 
 require_once "../config/database.php";
 
-if(!isset($_SESSION['id_user']))
-{
+if (!isset($_SESSION['id_user'])) {
     header("Location: ../login.php");
     exit;
 }
-
-$id_query = mysqli_query(
-    $koneksi,
-    "SELECT AUTO_INCREMENT
-    FROM information_schema.TABLES
-    WHERE TABLE_SCHEMA='db_arsip_samsat'
-    AND TABLE_NAME='kendaraan'"
-);
-
-$id_data = mysqli_fetch_assoc($id_query);
-
-$id_otomatis = "K-" . str_pad(
-    $id_data['AUTO_INCREMENT'],
-    4,
-    '0',
-    STR_PAD_LEFT
-);
 
 $wp = mysqli_query(
     $koneksi,
@@ -48,8 +30,8 @@ $wp = mysqli_query(
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <link
-href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css"
-rel="stylesheet" />
+        href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css"
+        rel="stylesheet" />
 
     <link rel="stylesheet" href="../assets/css/style.css?v=10">
 
@@ -57,247 +39,201 @@ rel="stylesheet" />
 
 <body>
 
-<div class="container">
+    <div class="container">
 
-    <div class="sidebar">
+        <div class="sidebar">
 
-        <div class="logo">
-            SAMSAT BATU AJI
-        </div>
+            <div class="logo">
+                SAMSAT BATU AJI
+            </div>
 
-        <div class="menu">
+            <div class="menu">
 
-            <a href="dashboard.php">
-                Dashboard
-            </a>
-
-            <a href="wajib_pajak.php">
-                Wajib Pajak
-            </a>
-
-            <a class="active" href="kendaraan.php">
-                Kendaraan
-            </a>
-
-            <a href="pembayaran.php">
-                Pembayaran
-            </a>
-
-            <a href="arsip.php">
-                Arsip
-            </a>
-
-            <?php if($_SESSION['role'] == 'admin') { ?>
-
-                <a href="user.php">
-                    User
+                <a class="active" href="kendaraan.php">
+                    Kendaraan
                 </a>
-
-            <?php } ?>
-
-        </div>
-
-        <div class="logout">
-
-            <a href="../logout.php">
-                Keluar
-            </a>
-
-        </div>
-
-    </div>
-
-    <div class="main">
-
-        <div class="header">
-
-            <div class="user-info">
-
-                <span class="user-name">
-                    <?php echo $_SESSION['nama']; ?>
-                </span>
 
             </div>
 
         </div>
 
-        <div class="content">
+        <div class="main">
 
-            <h2 class="form-title">
-                Tambah Data Kendaraan
-            </h2>
+            <div class="header">
 
-            <form method="POST">
+                <div class="user-info">
 
-    <div class="form-grid">
+                    <span class="user-name">
+                        <?php echo $_SESSION['nama']; ?>
+                    </span>
 
-        <div class="form-card">
+                </div>
 
-            <label>ID Kendaraan</label>
+            </div>
 
-            <input
-            type="text"
-            value="<?php echo $id_otomatis; ?>"
-            readonly>
+            <div class="content">
 
-        </div>
+                <h2 class="form-title">
+                    Tambah Data Kendaraan
+                </h2>
 
-        <div class="form-card">
+                <form method="POST">
 
-            <label>Tahun</label>
+                    <div class="form-grid">
 
-            <input
-            type="number"
-            name="tahun"
-            min="1900"
-            max="2099"
-            required>
+                        <div class="form-card">
 
-        </div>
+                            <label>Tahun</label>
 
-        <div class="form-card">
+                            <input
+                                type="number"
+                                name="tahun"
+                                min="1900"
+                                max="2099"
+                                required>
 
-            <label>No. Polisi</label>
+                        </div>
 
-           <input
-type="text"
-name="no_polisi"
-required>
+                        <div class="form-card">
 
-        </div>
+                            <label>No. Polisi</label>
 
-        <div class="form-card">
+                            <input
+                                type="text"
+                                name="no_polisi"
+                                required>
 
-            <label>ID Wajib Pajak</label>
+                        </div>
 
-            <select
-id="id_wajib_pajak"
-name="id_wajib_pajak"
-required>
+                        <div class="form-card">
 
-                <option value="">
-                    Pilih Wajib Pajak
-                </option>
+                            <label>ID Wajib Pajak</label>
 
-                <?php
-                while($row = mysqli_fetch_assoc($wp))
-                {
-                ?>
+                            <select
+                                id="id_wajib_pajak"
+                                name="id_wajib_pajak"
+                                required>
 
-                <option
-                value="<?php echo $row['id_wajib_pajak']; ?>">
+                                <option value="">
+                                    Pilih Wajib Pajak
+                                </option>
 
-                    WP-<?php echo str_pad($row['id_wajib_pajak'],4,'0',STR_PAD_LEFT); ?>
-                    -
-                    <?php echo $row['nama']; ?>
+                                <?php
+                                while ($row = mysqli_fetch_assoc($wp)) {
+                                ?>
 
-                </option>
+                                    <option
+                                        value="<?php echo $row['id_wajib_pajak']; ?>">
 
-                <?php
-                }
-                ?>
+                                        <?php echo $row['nama']; ?>
+                                        -
+                                        <?php echo $row['no_ktp']; ?>
 
-            </select>
+                                    </option>
 
-        </div>
+                                <?php
+                                }
+                                ?>
 
-        <div class="form-card">
+                            </select>
 
-            <label>Merk</label>
+                        </div>
 
-            <input
-type="text"
-name="merk"
-required>
+                        <div class="form-card">
 
-        </div>
+                            <label>Merk</label>
 
-        <div class="form-card">
+                            <input
+                                type="text"
+                                name="merk"
+                                required>
 
-            <label>Status</label>
+                        </div>
 
-            <select
-            name="status"
-            required>
+                        <div class="form-card">
 
-                <option value="">
-                    Pilih Status
-                </option>
+                            <label>Status</label>
 
-                <option value="Aktif">
-                    Aktif
-                </option>
+                            <select
+                                name="status"
+                                required>
 
-                <option value="Rusak">
-                    Rusak
-                </option>
+                                <option value="">
+                                    Pilih Status
+                                </option>
 
-                <option value="Dijual">
-                    Dijual
-                </option>
+                                <option value="Aktif">
+                                    Aktif
+                                </option>
 
-            </select>
+                                <option value="Rusak">
+                                    Rusak
+                                </option>
 
-        </div>
+                                <option value="Dijual">
+                                    Dijual
+                                </option>
 
-        <div class="form-card full-width">
+                            </select>
 
-            <label>Tipe</label>
+                        </div>
 
-           <input
-type="text"
-name="tipe"
-required>
+                        <div class="form-card">
+
+                            <label>Tipe</label>
+
+                            <input
+                                type="text"
+                                name="tipe"
+                                required>
+
+                        </div>
+
+                    </div>
+
+                    <div class="button-group">
+
+                        <a
+                            href="kendaraan.php"
+                            class="btn-back">
+
+                            Kembali
+
+                        </a>
+
+                        <button
+                            type="submit"
+                            name="simpan"
+                            class="btn-save">
+
+                            Simpan
+
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
 
         </div>
 
     </div>
 
-    <div class="button-group">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
-        <a
-        href="kendaraan.php"
-        class="btn-back">
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
-            Kembali
+    <script>
+        $(document).ready(function() {
 
-        </a>
+            $('#id_wajib_pajak').select2({
+                placeholder: 'Cari Wajib Pajak',
+                width: '100%'
+            });
 
-        <button
-        type="submit"
-        name="simpan"
-        class="btn-save">
-
-            Simpan
-
-        </button>
-
-    </div>
-
-</form>
-
-        </div>
-
-    </div>
-
-</div>
-
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-
-<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-
-<script>
-
-$(document).ready(function(){
-
-    $('#id_wajib_pajak').select2({
-        placeholder: 'Cari Wajib Pajak',
-        width: '100%'
-    });
-
-});
-
-</script>
+        });
+    </script>
 
 </body>
 
@@ -305,14 +241,38 @@ $(document).ready(function(){
 
 <?php
 
-if(isset($_POST['simpan']))
-{
+if (isset($_POST['simpan'])) {
     $id_wajib_pajak = $_POST['id_wajib_pajak'];
-    $no_polisi = $_POST['no_polisi'];
+    $no_polisi = strtoupper(trim($_POST['no_polisi']));
     $merk = $_POST['merk'];
     $tipe = $_POST['tipe'];
     $tahun = $_POST['tahun'];
     $status = $_POST['status'];
+
+    $cek = mysqli_query(
+    $koneksi,
+    "SELECT id_kendaraan
+     FROM kendaraan
+     WHERE no_polisi = '$no_polisi'
+     LIMIT 1"
+);
+
+if (mysqli_num_rows($cek) > 0) {
+
+    echo "
+
+    <script>
+
+        alert('Nomor Polisi sudah terdaftar!');
+
+        window.location='tambah_kendaraan.php';
+
+    </script>
+
+    ";
+
+    exit;
+}
 
     mysqli_query(
         $koneksi,

@@ -3,22 +3,19 @@ session_start();
 
 require_once "../config/database.php";
 
-if(!isset($_SESSION['id_user']))
-{
+if (!isset($_SESSION['id_user'])) {
     header("Location: ../login.php");
     exit;
 }
 
-if($_SESSION['role'] != 'admin')
-{
+if ($_SESSION['role'] != 'admin') {
     header("Location: dashboard.php");
     exit;
 }
 
 $id = $_GET['id'];
 
-if($id == $_SESSION['id_user'])
-{
+if ($id == $_SESSION['id_user']) {
     echo "
     <script>
 
@@ -32,8 +29,8 @@ if($id == $_SESSION['id_user'])
 }
 
 mysqli_query(
-$koneksi,
-"DELETE FROM user
+    $koneksi,
+    "DELETE FROM user
 WHERE id_user='$id'"
 );
 
@@ -46,4 +43,3 @@ echo "
 
 </script>
 ";
-?>

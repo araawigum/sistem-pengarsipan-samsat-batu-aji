@@ -1,11 +1,9 @@
 <?php
-
 session_start();
 
 require_once "../config/database.php";
 
-if(!isset($_SESSION['id_user']))
-{
+if (!isset($_SESSION['id_user'])) {
     header("Location: ../login.php");
     exit;
 }
@@ -40,175 +38,169 @@ $data = mysqli_fetch_assoc($query);
 
 <body>
 
-<div class="container">
+    <div class="container">
 
-    <div class="sidebar">
+        <div class="sidebar">
 
-        <div class="logo">
-            SAMSAT BATU AJI
-        </div>
+            <div class="logo">
+                SAMSAT BATU AJI
+            </div>
 
-        <div class="menu">
+            <div class="menu">
 
-            <a href="dashboard.php">
-                Dashboard
-            </a>
-
-            <a class="active" href="wajib_pajak.php">
-                Wajib Pajak
-            </a>
-
-            <a href="kendaraan.php">
-                Kendaraan
-            </a>
-
-            <a href="pembayaran.php">
-                Pembayaran
-            </a>
-
-            <a href="arsip.php">
-                Arsip
-            </a>
-
-            <?php if($_SESSION['role'] == 'admin') { ?>
-
-                <a href="user.php">
-                    User
+                <a class="active" href="wajib_pajak.php">
+                    Wajib Pajak
                 </a>
-
-            <?php } ?>
-
-        </div>
-
-        <div class="logout">
-
-            <a href="../logout.php">
-                Keluar
-            </a>
-
-        </div>
-
-    </div>
-
-    <div class="main">
-
-        <div class="header">
-
-            <div class="user-info">
-
-                <span class="user-name">
-                    <?php echo $_SESSION['nama']; ?>
-                </span>
 
             </div>
 
         </div>
 
-        <div class="content">
+        <div class="main">
 
-            <h2 class="form-title">
-                Edit Data Wajib Pajak
-            </h2>
+            <div class="header">
 
-            <form method="POST">
+                <div class="user-info">
 
-                <div class="form-card">
-
-                    <label>Nama</label>
-
-                    <input
-                    type="text"
-                    name="nama"
-                    value="<?php echo $data['nama']; ?>"
-                    required>
+                    <span class="user-name">
+                        <?php echo $_SESSION['nama']; ?>
+                    </span>
 
                 </div>
 
-                <div class="form-card">
+            </div>
 
-                    <label>No. KTP</label>
+            <div class="content">
 
-                    <input
-                    type="text"
-                    name="no_ktp"
-                    value="<?php echo $data['no_ktp']; ?>"
-                    required>
+                <h2 class="form-title">
+                    Edit Data Wajib Pajak
+                </h2>
 
-                </div>
+                <form method="POST">
 
-                <div class="form-card">
+                    <div class="form-card">
 
-                    <label>No. HP</label>
+                        <label>Nama</label>
 
-                    <input
-                    type="text"
-                    name="no_hp"
-                    value="<?php echo $data['no_hp']; ?>"
-                    required>
+                        <input
+                            type="text"
+                            name="nama"
+                            value="<?php echo $data['nama']; ?>"
+                            required>
 
-                </div>
+                    </div>
 
-                <div class="form-card">
+                    <div class="form-card">
 
-                    <label>Alamat</label>
+                        <label>No. KTP</label>
 
-                    <input
-                    type="text"
-                    name="alamat"
-                    value="<?php echo $data['alamat']; ?>"
-                    required>
+                        <input
+                            type="text"
+                            name="no_ktp"
+                            value="<?php echo $data['no_ktp']; ?>"
+                            required>
 
-                </div>
+                    </div>
 
-                <div class="button-group">
+                    <div class="form-card">
 
-    <a
-    href="hapus_wajib_pajak.php?id=<?php echo $id; ?>"
-    class="btn-delete"
-    onclick="return confirm('Hapus data ini?')">
+                        <label>No. HP</label>
 
-        Hapus
+                        <input
+                            type="text"
+                            name="no_hp"
+                            value="<?php echo $data['no_hp']; ?>"
+                            required>
 
-    </a>
+                    </div>
 
-                    <a
-                    href="wajib_pajak.php"
-                    class="btn-back">
+                    <div class="form-card">
 
-                        Kembali
+                        <label>Alamat</label>
 
-                    </a>
+                        <input
+                            type="text"
+                            name="alamat"
+                            value="<?php echo $data['alamat']; ?>"
+                            required>
 
-                    <button
-                    type="submit"
-                    name="update"
-                    class="btn-save">
+                    </div>
 
-                        Simpan
+                    <div class="button-group">
 
-                    </button>
+                        <a
+                            href="hapus_wajib_pajak.php?id=<?php echo $id; ?>"
+                            class="btn-delete"
+                            onclick="return confirm('Hapus data ini?')">
 
-                </div>
+                            Hapus
 
-            </form>
+                        </a>
+
+                        <a
+                            href="wajib_pajak.php"
+                            class="btn-back">
+
+                            Kembali
+
+                        </a>
+
+                        <button
+                            type="submit"
+                            name="update"
+                            class="btn-save">
+
+                            Simpan
+
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
 
         </div>
 
     </div>
 
-</div>
-
 </body>
+
 </html>
 
 <?php
 
-if(isset($_POST['update']))
-{
+if (isset($_POST['update'])) {
     $nama = $_POST['nama'];
     $no_ktp = $_POST['no_ktp'];
     $no_hp = $_POST['no_hp'];
     $alamat = $_POST['alamat'];
+
+    $cek = mysqli_query(
+    $koneksi,
+    "SELECT id_wajib_pajak
+     FROM wajib_pajak
+     WHERE no_ktp = '$no_ktp'
+     AND id_wajib_pajak != '$id'
+     LIMIT 1"
+);
+
+if (mysqli_num_rows($cek) > 0) {
+
+    echo "
+
+    <script>
+
+        alert('Nomor KTP sudah digunakan!');
+
+        window.location='wajib_pajak.php';
+
+    </script>
+
+    ";
+
+    exit;
+}
 
     mysqli_query(
         $koneksi,
